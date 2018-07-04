@@ -1,0 +1,7 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\*\shell\Encrypter\command]
+@="C:\Program Files\Java\jre-10.0.1\bin\javaw.exe -jar "C:\Program Files\EncryptMe\EncryptMe.jar" encrypt %1"
+
+[HKEY_CLASSES_ROOT\*\shell\Décrypter\command]
+@="C:\Program Files\Java\jre-10.0.1\bin\javaw.exe -jar "C:\Program Files\EncryptMe\EncryptMe.jar" decrypt %1"
