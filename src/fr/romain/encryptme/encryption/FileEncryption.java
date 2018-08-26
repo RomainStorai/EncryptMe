@@ -12,7 +12,7 @@ public class FileEncryption {
         File output = new File(file + ".eye");
         File input = new File(file);
         if (!exist(input)) {
-            EncryptMe.showError("Fichier inconnu");
+            EncryptMe.showError("Fichier inconnu\n" + input.getAbsolutePath());
             return null;
         }
         try {
