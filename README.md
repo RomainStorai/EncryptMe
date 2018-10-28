@@ -1,10 +1,11 @@
 # EncryptMe
-Programme pour encrypter et décrypter des fichiers
+Programme pour encoder et décoder des fichiers avec un mot de passe.
 
 ## Usage
+Vous pouvez directement utiliser un terminal pour éxecuter ces commandes :
 ```
-... encrypt (sortie) [mot de passe]
-... decrypt (sortie) [mot de passe]
+... encrypt (fichier) [mot de passe]
+... decrypt (fichier) [mot de passe]
 ```
 
 ## Utilisation clic-droit
