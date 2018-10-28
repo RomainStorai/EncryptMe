@@ -21,26 +21,13 @@ public class AES {
 
     private static final int BUFFER_SIZE = 1024;
 
-
-    /**
-     * @return a new pseudorandom salt of the specified length
-     */
     private static byte[] generateSalt(int length) {
         Random r = new SecureRandom();
         byte[] salt = new byte[length];
         r.nextBytes(salt);
         return salt;
     }
-
-    /**
-     * Derive an AES encryption key and authentication key from given password and salt,
-     * using PBKDF2 key stretching. The authentication key is 64 bits long.
-     *
-     * @param keyLength length of the AES key in bits (128, 192, or 256)
-     * @param password  the password from which to derive the keys
-     * @param salt      the salt from which to derive the keys
-     * @return a Keys object containing the two generated keys
-     */
+    
     private static Keys keygen(int keyLength, char[] password, byte[] salt) {
         SecretKeyFactory factory;
         try {
@@ -63,26 +50,6 @@ public class AES {
         return new Keys(encKey, authKey);
     }
 
-    /**
-     * Encrypts a stream of data. The encrypted stream consists of a header
-     * followed by the raw AES data. The header is broken down as follows:<br/>
-     * <ul>
-     * <li><b>keyLength</b>: AES key length in bytes (valid for 16, 24, 32) (1 byte)</li>
-     * <li><b>salt</b>: pseudorandom salt used to derive keys from password (16 bytes)</li>
-     * <li><b>authentication key</b> (derived from password and salt, used to
-     * check validity of password upon decryption) (8 bytes)</li>
-     * <li><b>IV</b>: pseudorandom AES initialization vector (16 bytes)</li>
-     * </ul>
-     *
-     * @param keyLength key length to use for AES encryption (must be 128, 192, or 256)
-     * @param password  password to use for encryption
-     * @param input     an arbitrary byte stream to encrypt
-     * @param output    stream to which encrypted data will be written
-     * @throws AES.InvalidKeyLengthException             if keyLength is not 128, 192, or 256
-     * @throws AES.StrongEncryptionNotAvailableException if keyLength is 192 or 256, but the Java runtime's jurisdiction
-     *                                                   policy files do not allow 192- or 256-bit encryption
-     * @throws IOException
-     */
     public static void encrypt(int keyLength, char[] password, InputStream input, OutputStream output)
             throws InvalidKeyLengthException, StrongEncryptionNotAvailableException, IOException {
 
@@ -131,19 +98,6 @@ public class AES {
         }
     }
 
-    /**
-     * Decrypts a stream of data that was encrypted by {@link #encrypt}.
-     *
-     * @param password the password used to encrypt/decrypt the stream
-     * @param input    stream of encrypted data to be decrypted
-     * @param output   stream to which decrypted data will be written
-     * @return the key length for the decrypted stream (128, 192, or 256)
-     * @throws AES.InvalidPasswordException              if the given password was not used to encrypt the data
-     * @throws AES.InvalidAESStreamException             if the given input stream is not a valid AES-encrypted stream
-     * @throws AES.StrongEncryptionNotAvailableException if the stream is 192 or 256-bit encrypted, and the Java runtime's
-     *                                                   jurisdiction policy files do not allow for AES-192 or 256
-     * @throws IOException
-     */
     public static int decrypt(char[] password, InputStream input, OutputStream output)
             throws InvalidPasswordException, InvalidAESStreamException, IOException,
             StrongEncryptionNotAvailableException {
@@ -195,9 +149,6 @@ public class AES {
         return keyLength;
     }
 
-    /**
-     * A tuple of encryption and authentication keys returned by {@link #keygen}
-     */
     private static class Keys {
         public final SecretKey encryption, authentication;
 
@@ -207,12 +158,6 @@ public class AES {
         }
     }
 
-
-    //******** EXCEPTIONS thrown by encrypt and decrypt ********
-
-    /**
-     * Thrown if an attempt is made to decrypt a stream with an incorrect password.
-     */
     public static class InvalidPasswordException extends Exception {
         InvalidPasswordException() {
             super();
@@ -220,28 +165,18 @@ public class AES {
         }
     }
 
-    /**
-     * Thrown if an attempt is made to encrypt a stream with an invalid AES key length.
-     */
     public static class InvalidKeyLengthException extends Exception {
         InvalidKeyLengthException(int length) {
             super("Invalid AES key length: " + length);
         }
     }
 
-    /**
-     * Thrown if 192- or 256-bit AES encryption or decryption is attempted,
-     * but not available on the particular Java platform.
-     */
     public static class StrongEncryptionNotAvailableException extends Exception {
         public StrongEncryptionNotAvailableException(int keySize) {
             super(keySize + "-bit AES encryption is not available on this Java platform.");
         }
     }
 
-    /**
-     * Thrown if an attempt is made to decrypt an invalid AES stream.
-     */
     public static class InvalidAESStreamException extends Exception {
         public InvalidAESStreamException() {
             super();
